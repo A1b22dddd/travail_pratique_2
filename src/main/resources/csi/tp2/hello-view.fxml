@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="csi.tp2.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
-
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="csi.tp2.HelloController">
+    <top>
+        <MenuBar>
+            <Menu text="Jeu">
+                <MenuItem text="Recommencer" />
+                <MenuItem text="Quitter" />
+            </Menu>
+        </MenuBar>
+    </top>
+    <left>
+        <VBox alignment="CENTER" spacing="15">
+            <Button fx:id="btnAccueil" text="Accueil" onAction="#handleAccueil" />
+            <Button fx:id="btnRegles" text="Règles" onAction="#handleRegles" />
+            <Button fx:id="btnJouer" text="Jouer" onAction="#handleJouer" />
+            <Button fx:id="btnQuitter" text="Quitter" onAction="#handleQuitter" />
+        </VBox>
+    </left>
+    <center>
+        <StackPane fx:id="contentPane" />
+    </center>
+</BorderPane>

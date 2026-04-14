@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="csi.tp2.JeuController">
+    <top>
+        <Label fx:id="labelGagnant" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    </top>
+    <center>
+        <StackPane fx:id="plateauContainer">
+            <!-- Fond temporaire du plateau (gris) -->
+            <Rectangle width="500" height="500" fill="LIGHTGRAY" />
+            <!-- Pane pour les pions -->
+            <Pane fx:id="panePions" prefWidth="500" prefHeight="500" />
+        </StackPane>
+    </center>
+    <right>
+        <VBox alignment="CENTER" spacing="20">
+            <Label fx:id="labelTour" text="Tour du joueur" style="-fx-font-size: 16px;" />
+            <Label fx:id="labelDe" text="" style="-fx-font-size: 20px;" />
+            <Button text="Lancer le dé" onAction="#lancerDe" />
+        </VBox>
+    </right>
+</BorderPane>
