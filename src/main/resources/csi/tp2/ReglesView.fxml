@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" spacing="20" style="-fx-background-color: #B0C4DE;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
     <Label text="Règles du jeu" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
     <TextArea editable="false" wrapText="true" prefWidth="500" prefHeight="300" text="Règles à compléter..." />
 </VBox>

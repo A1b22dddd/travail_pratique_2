@@ -3,23 +3,25 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="csi.tp2.JeuController">
+            fx:controller="csi.tp2.JeuController"
+            style="-fx-background-color: #B0C4DE;">
     <top>
         <Label fx:id="labelGagnant" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
     </top>
     <center>
-        <StackPane fx:id="plateauContainer">
-            <!-- Fond temporaire du plateau (gris) -->
-            <Rectangle width="500" height="500" fill="LIGHTGRAY" />
-            <!-- Pane pour les pions -->
-            <Pane fx:id="panePions" prefWidth="500" prefHeight="500" />
+        <!-- Le StackPane centre la grille et les pions -->
+        <StackPane fx:id="conteneurPlateau" alignment="CENTER">
+            <!-- Grille de jeu 10x10 avec cases numérotées -->
+            <GridPane fx:id="grillePane" alignment="CENTER" />
+            <!-- Pane transparent pour les pions -->
+            <Pane fx:id="panePions" />
         </StackPane>
     </center>
     <right>
