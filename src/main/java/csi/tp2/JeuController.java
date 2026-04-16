@@ -56,7 +56,7 @@ public class JeuController {
             System.err.println("Erreur : impossible de charger l'image /images/plateau.png");
         }
 
-        // 🔥 AJOUT : empêcher la déformation du plateau
+        //  AJOUT : empêcher la déformation du plateau
         conteneurPlateau.prefWidthProperty().bind(imagePlateau.fitWidthProperty());
         conteneurPlateau.prefHeightProperty().bind(imagePlateau.fitHeightProperty());
         conteneurPlateau.maxWidthProperty().bind(imagePlateau.fitWidthProperty());
@@ -66,7 +66,7 @@ public class JeuController {
         panePions.prefHeightProperty().bind(imagePlateau.fitHeightProperty());
         panePions.maxWidthProperty().bind(imagePlateau.fitWidthProperty());
         panePions.maxHeightProperty().bind(imagePlateau.fitHeightProperty());
-        // 🔥 FIN AJOUT
+        //  FIN AJOUT
 
         // Créer les pions (cercles colorés)
         pionJoueur = new Circle(15, javafx.scene.paint.Color.BLUE);
