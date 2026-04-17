@@ -24,10 +24,6 @@ public class HelloApplication extends Application {
         stage.setMaxWidth(1200);
         stage.setMaxHeight(700);
 
-        // Taille initiale
-        stage.setWidth(900);
-        stage.setHeight(650);
-
         stage.show();
     }
 
