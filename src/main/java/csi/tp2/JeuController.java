@@ -19,7 +19,7 @@ public class JeuController {
     @FXML private ImageView imagePlateau;      // L'image du plateau de jeu
     @FXML private Pane panePions;              // Conteneur transparent pour les pions
     @FXML private Label labelTour;             // Affiche le tour actuel
-    @FXML private Label labelDe;               // Affiche le résultat du dé
+    @FXML private ImageView imageDe;           // Affiche l'image du dé (remplace labelDe)
     @FXML private Label labelGagnant;          // Affiche le gagnant
     @FXML private StackPane conteneurPlateau;  // Conteneur principal (pour redimensionnement)
 
@@ -82,7 +82,26 @@ public class JeuController {
             mettreAJourAffichage();
         });
 
+        // Afficher la face 1 par défaut
+        afficherFaceDe(1);
+
         mettreAJourAffichage();
+    }
+
+    // ================== GESTION DES IMAGES DU DÉ ==================
+    /**
+     * Charge et affiche l'image correspondant à la valeur du dé.
+     * Les images doivent être nommées de1.png, de2.png, ..., de6.png
+     * et placées dans src/main/resources/images/
+     */
+    private void afficherFaceDe(int valeur) {
+        try {
+            String chemin = "/images/de" + valeur + ".png";
+            Image face = new Image(getClass().getResourceAsStream(chemin));
+            imageDe.setImage(face);
+        } catch (Exception e) {
+            System.err.println("Erreur : impossible de charger l'image " + "/images/de" + valeur + ".png");
+        }
     }
 
     // ================== LANCER LE DÉ ==================
@@ -91,7 +110,7 @@ public class JeuController {
         if (partieTerminee) return;
 
         int de = aleatoire.nextInt(6) + 1;
-        labelDe.setText("Dé : " + de);
+        afficherFaceDe(de);   // Affiche l'image
 
         if (tourJoueur) {
             positionJoueur = mecanisme.deplacer(positionJoueur, de, positionOrdinateur, "Joueur");
@@ -175,7 +194,7 @@ public class JeuController {
         tourJoueur = true;
         partieTerminee = false;
         labelGagnant.setText("");
-        labelDe.setText("");
+        afficherFaceDe(1);   // Remet l'image du dé à 1
         labelTour.setText("Tour du joueur");
         mettreAJourAffichage();
     }

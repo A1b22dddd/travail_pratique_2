@@ -6,5 +6,5 @@
 
 <VBox alignment="CENTER" spacing="20" style="-fx-background-color: #B0C4DE;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
     <Label text="Règles du jeu" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
-    <TextArea editable="false" wrapText="true" prefWidth="500" prefHeight="300" text="Règles à compléter..." />
+    <TextArea editable="false" wrapText="true" prefWidth="500" prefHeight="300" text="1. Le jeu oppose un joueur à l’ordinateur sur un plateau de 100 cases. Le but est d’atteindre la case finale avant l’adversaire.&#10;&#10;2. Les joueurs jouent à tour de rôle en lançant un dé pour avancer leur pion du nombre de cases indiqué.&#10;&#10;3. Le joueur lance le dé manuellement, tandis que l’ordinateur effectue ses actions automatiquement.&#10;&#10;4. Si un joueur arrive au bas d’une échelle, il monte automatiquement jusqu’à son sommet.&#10;&#10;5. Si un joueur arrive sur la tête d’un serpent, il redescend automatiquement jusqu’à sa queue.&#10;&#10;6. Le joueur peut quitter la partie à tout moment, avec une confirmation.&#10;&#10;7. Le premier joueur à atteindre la case 100 remporte la partie." />
 </VBox>
