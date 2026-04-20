@@ -51,7 +51,7 @@
     <right>
         <VBox alignment="CENTER" prefHeight="545.0" prefWidth="194.0" spacing="20">
             <Label fx:id="labelTour" prefHeight="26.0" prefWidth="110.0" style="-fx-font-size: 16px;" text="Tour du joueur" />
-            <!-- Image du dé à la place du label -->
+            <!-- Image du dé  -->
             <ImageView fx:id="imageDe" fitWidth="80" fitHeight="80" preserveRatio="true" />
             <Button onAction="#lancerDe" text="Lancer le dé" />
         </VBox>

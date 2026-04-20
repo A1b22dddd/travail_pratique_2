@@ -4,51 +4,45 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Circle;
 import java.util.Random;
 
-/**
- * Contrôleur de l'écran de jeu.
- * Utilise une image de fond pour le plateau.
- */
 public class JeuController {
 
-    // ================== ÉLÉMENTS DE L'INTERFACE ==================
-    @FXML private ImageView imagePlateau;      // L'image du plateau de jeu
-    @FXML private Pane panePions;              // Conteneur transparent pour les pions
-    @FXML private Label labelTour;             // Affiche le tour actuel
-    @FXML private ImageView imageDe;           // Affiche l'image du dé (remplace labelDe)
-    @FXML private Label labelGagnant;          // Affiche le gagnant
-    @FXML private StackPane conteneurPlateau;  // Conteneur principal (pour redimensionnement)
+    // Références aux éléments du FXML
+    @FXML private ImageView imagePlateau;   // Image du plateau
+    @FXML private Label labelTour;          // Indique le tour actuel
+    @FXML private ImageView imageDe;        // Image du dé
+    @FXML private Label labelGagnant;       // Affiche le gagnant
+    @FXML private StackPane conteneurPlateau; // Conteneur principal du plateau
+    @FXML private GridPane grid;            // Grille 10x10 pour placer les pions
 
-    // ================== MODÈLE ==================
+    // Modèle du jeu
     private Grille grille;
     private Mecanisme mecanisme;
     private Random aleatoire = new Random();
 
+    // Positions des joueurs (1 à 100)
     private int positionJoueur = 0;
     private int positionOrdinateur = 0;
 
-    // Pions temporaires (cercles)
-    private Circle pionJoueur;
-    private Circle pionOrdinateur;
+    // Pions affichés sur la grille
+    private ImageView pionJoueur;
+    private ImageView pionOrdinateur;
 
     private boolean tourJoueur = true;
     private boolean partieTerminee = false;
 
-    // Taille de référence de l'image (à adapter selon votre image)
-    private static final double LARGEUR_PLATEAU = 600;
-    private static final double HAUTEUR_PLATEAU = 600;
-
-    // ================== INITIALISATION ==================
+    // Méthode appelée automatiquement par JavaFX au chargement du FXML
     @FXML
-    private void initialiser() {
+    private void initialize() {
+
+        // Initialisation du modèle
         grille = new Grille();
         mecanisme = new Mecanisme(grille);
 
-        // Charger l'image du plateau
+        // Chargement de l'image du plateau
         try {
             Image plateau = new Image(getClass().getResourceAsStream("/images/plateau.png"));
             imagePlateau.setImage(plateau);
@@ -56,117 +50,135 @@ public class JeuController {
             System.err.println("Erreur : impossible de charger l'image /images/plateau.png");
         }
 
-        //  AJOUT : empêcher la déformation du plateau
+        // Le plateau suit la taille de l'image
         conteneurPlateau.prefWidthProperty().bind(imagePlateau.fitWidthProperty());
         conteneurPlateau.prefHeightProperty().bind(imagePlateau.fitHeightProperty());
-        conteneurPlateau.maxWidthProperty().bind(imagePlateau.fitWidthProperty());
-        conteneurPlateau.maxHeightProperty().bind(imagePlateau.fitHeightProperty());
 
-        panePions.prefWidthProperty().bind(imagePlateau.fitWidthProperty());
-        panePions.prefHeightProperty().bind(imagePlateau.fitHeightProperty());
-        panePions.maxWidthProperty().bind(imagePlateau.fitWidthProperty());
-        panePions.maxHeightProperty().bind(imagePlateau.fitHeightProperty());
-        //  FIN AJOUT
+        // Chargement du pion du joueur
+        try {
+            Image imgJoueur = new Image(getClass().getResourceAsStream("/images/pionJoueur.png"));
+            pionJoueur = new ImageView(imgJoueur);
+            pionJoueur.setFitWidth(40);
+            pionJoueur.setPreserveRatio(true);
+        } catch (Exception e) {
+            pionJoueur = new ImageView();
+        }
 
-        // Créer les pions (cercles colorés)
-        pionJoueur = new Circle(15, javafx.scene.paint.Color.BLUE);
-        pionOrdinateur = new Circle(15, javafx.scene.paint.Color.RED);
-        panePions.getChildren().addAll(pionJoueur, pionOrdinateur);
+        // Chargement du pion de l'ordinateur
+        try {
+            Image imgOrdi = new Image(getClass().getResourceAsStream("/images/pionOrdinateur.png"));
+            pionOrdinateur = new ImageView(imgOrdi);
+            pionOrdinateur.setFitWidth(40);
+            pionOrdinateur.setPreserveRatio(true);
+        } catch (Exception e) {
+            pionOrdinateur = new ImageView();
+        }
 
-        // Adapter la taille du panePions à l'image affichée
-        conteneurPlateau.layoutBoundsProperty().addListener((obs, anc, nouv) -> {
-            double largeurImage = imagePlateau.getBoundsInParent().getWidth();
-            double hauteurImage = imagePlateau.getBoundsInParent().getHeight();
-            panePions.setPrefWidth(largeurImage);
-            panePions.setPrefHeight(hauteurImage);
-            mettreAJourAffichage();
-        });
+        // Ajout des pions dans la grille
+        grid.getChildren().addAll(pionJoueur, pionOrdinateur);
 
-        // Afficher la face 1 par défaut
+        // Affiche la face 1 du dé au départ
         afficherFaceDe(1);
 
+        // Place les pions selon leurs positions initiales
         mettreAJourAffichage();
     }
 
-    // ================== GESTION DES IMAGES DU DÉ ==================
-    /**
-     * Charge et affiche l'image correspondant à la valeur du dé.
-     * Les images doivent être nommées de1.png, de2.png, ..., de6.png
-     * et placées dans src/main/resources/images/
-     */
+    // Affiche l'image correspondant à la valeur du dé
     private void afficherFaceDe(int valeur) {
+        String chemin = "/images/de" + valeur + ".png";
         try {
-            String chemin = "/images/de" + valeur + ".png";
             Image face = new Image(getClass().getResourceAsStream(chemin));
             imageDe.setImage(face);
         } catch (Exception e) {
-            System.err.println("Erreur : impossible de charger l'image " + "/images/de" + valeur + ".png");
+            System.err.println("Erreur : impossible de charger l'image " + chemin);
         }
     }
 
-    // ================== LANCER LE DÉ ==================
+    // Action du bouton "Lancer le dé"
     @FXML
     private void lancerDe() {
         if (partieTerminee) return;
 
         int de = aleatoire.nextInt(6) + 1;
-        afficherFaceDe(de);   // Affiche l'image
+        afficherFaceDe(de);
 
         if (tourJoueur) {
+
+            // Déplacement du joueur
             positionJoueur = mecanisme.deplacer(positionJoueur, de, positionOrdinateur, "Joueur");
             positionJoueur = mecanisme.verifierMecanisme(positionJoueur, "Joueur");
             deplacerPion(pionJoueur, positionJoueur);
 
+            // Vérifie la victoire
             if (positionJoueur >= 100) {
                 partieTerminee = true;
                 labelGagnant.setText("Joueur gagne !");
                 return;
             }
+
+            // Passage au tour de l'ordinateur
             tourJoueur = false;
             labelTour.setText("Tour de l'ordinateur");
             jouerTourOrdinateur();
+
         } else {
+
+            // Déplacement de l'ordinateur
             positionOrdinateur = mecanisme.deplacer(positionOrdinateur, de, positionJoueur, "Ordinateur");
             positionOrdinateur = mecanisme.verifierMecanisme(positionOrdinateur, "Ordinateur");
             deplacerPion(pionOrdinateur, positionOrdinateur);
 
+            // Vérifie la victoire
             if (positionOrdinateur >= 100) {
                 partieTerminee = true;
                 labelGagnant.setText("Ordinateur gagne !");
                 return;
             }
+
+            // Retour au joueur
             tourJoueur = true;
             labelTour.setText("Tour du joueur");
         }
+
         mettreAJourAffichage();
     }
 
+    // L'ordinateur joue après un petit délai
     private void jouerTourOrdinateur() {
         if (partieTerminee || tourJoueur) return;
+
         new Thread(() -> {
-            try { Thread.sleep(800); } catch (InterruptedException e) { e.printStackTrace(); }
-            javafx.application.Platform.runLater(() -> lancerDe());
+            try { Thread.sleep(800); } catch (InterruptedException e) {}
+            javafx.application.Platform.runLater(this::lancerDe);
         }).start();
     }
 
-    // ================== DÉPLACEMENT DES PIONS ==================
-    private void deplacerPion(Circle pion, int position) {
+    // Déplace un pion sur la grille selon sa position (1 à 100)
+    private void deplacerPion(ImageView pion, int position) {
+
         if (position == 0) {
             pion.setVisible(false);
             return;
         }
+
         pion.setVisible(true);
 
-        double largeurCase = imagePlateau.getBoundsInParent().getWidth() / 10;
-        double hauteurCase = imagePlateau.getBoundsInParent().getHeight() / 10;
-
         int ligne, colonne;
+
+        // Case 100 (coin supérieur gauche)
         if (position == 100) {
             ligne = 0;
             colonne = 0;
         } else {
+            // Ligne de 0 à 9 (du bas vers le haut)
             ligne = (position - 1) / 10;
+
+            // Position dans la ligne
             int posDansLigne = (position - 1) % 10;
+
+            // Lignes paires → gauche vers droite
+            // Lignes impaires → droite vers gauche
             if (ligne % 2 == 0) {
                 colonne = posDansLigne;
             } else {
@@ -174,19 +186,21 @@ public class JeuController {
             }
         }
 
-        double centreX = colonne * largeurCase + largeurCase / 2;
-        double centreY = (9 - ligne) * hauteurCase + hauteurCase / 2;
+        // Inversion car la grille commence en haut
+        ligne = 9 - ligne;
 
-        pion.setCenterX(centreX);
-        pion.setCenterY(centreY);
+        // Placement dans la GridPane
+        GridPane.setColumnIndex(pion, colonne);
+        GridPane.setRowIndex(pion, ligne);
     }
 
+    // Met à jour l'affichage des deux pions
     private void mettreAJourAffichage() {
         deplacerPion(pionJoueur, positionJoueur);
         deplacerPion(pionOrdinateur, positionOrdinateur);
     }
 
-    // ================== RECOMMENCER ==================
+    // Réinitialise la partie
     @FXML
     private void recommencerPartie() {
         positionJoueur = 0;
@@ -194,13 +208,12 @@ public class JeuController {
         tourJoueur = true;
         partieTerminee = false;
         labelGagnant.setText("");
-        afficherFaceDe(1);   // Remet l'image du dé à 1
+        afficherFaceDe(1);
         labelTour.setText("Tour du joueur");
         mettreAJourAffichage();
     }
 
     @FXML
     private void quitterVersAccueil() {
-        // À relier plus tard si besoin
     }
 }

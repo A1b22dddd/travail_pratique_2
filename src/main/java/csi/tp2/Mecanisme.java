@@ -1,8 +1,5 @@
 package csi.tp2;
 
-/**
- * Gère les déplacements et les mécanismes.
- */
 public class Mecanisme {
 
     private Grille grille;
