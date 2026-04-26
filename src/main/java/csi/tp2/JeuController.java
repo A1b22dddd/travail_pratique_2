@@ -1,3 +1,17 @@
+
+
+/**
+ *
+ * Nom et prénom : HOUNSOU Césaire
+ * Nom et prénom de l'enseignant : François Picard Légaré
+ * Date de la derniere modification : 26-04-2026
+ * Description :
+ *   Contrôleur de l'écran de jeu (JeuView.fxml).
+ *   Gère l'affichage du plateau, des pions, du dé, des tours de jeu et des évènements.
+ *   Le modèle sous-jacent (Grille, Mecanisme) est conservé du TP1.
+ */
+
+
 package csi.tp2;
 
 import javafx.fxml.FXML;
@@ -12,18 +26,28 @@ import javafx.scene.layout.StackPane;
 import java.util.Optional;
 import java.util.Random;
 
+
+
+
+
 public class JeuController {
 
-    // Références aux éléments du FXML
-    @FXML private ImageView imagePlateau;   // Image du plateau
-    @FXML private Label labelTour;          // Indique le tour actuel
-    @FXML private ImageView imageDe;        // Image du dé
-    @FXML private Label labelGagnant;       // Affiche le gagnant (déjà présent)
-    @FXML private StackPane conteneurPlateau; // Conteneur principal du plateau
-    @FXML private GridPane grid;            // Grille 10x10 pour placer les pions
+    /** ImageView de l'image de fond du plateau */
+    @FXML private ImageView imagePlateau;
+    /** Label indiquant à qui est le tour (Joueur ou Ordinateur) */
+    @FXML private Label labelTour;
+    /** ImageView affichant la face actuelle du dé */
+    @FXML private ImageView imageDe;
+    /** Label affichant le nom du gagnant en fin de partie (caché sinon) */
+    @FXML private Label labelGagnant;
+    /** Conteneur principal regroupant l'image de fond et la grille */
+    @FXML private StackPane conteneurPlateau;
+    /** Grille 10×10 pour positionner les pions */
+    @FXML private GridPane grid;
 
-    // Nouveaux attributs pour la barre de menu
+    /** MenuItem pour recommencer une partie depuis la barre de menu */
     @FXML private MenuItem menuRecommencer;
+    /** MenuItem pour quitter la partie et revenir à l'accueil depuis la barre de menu */
     @FXML private MenuItem menuQuitter;
 
     // Modèle du jeu
@@ -31,26 +55,31 @@ public class JeuController {
     private Mecanisme mecanisme;
     private Random aleatoire = new Random();
 
-    // Positions des joueurs (1 à 100)
+    /** Position actuelle du pion du joueur (0 = pas encore entré sur le plateau) */
     private int positionJoueur = 0;
+    /** Position actuelle du pion de l'ordinateur */
     private int positionOrdinateur = 0;
 
-    // Pions affichés sur la grille
+    /** ImageView représentant le pion du joueur */
     private ImageView pionJoueur;
+    /** ImageView représentant le pion de l'ordinateur */
     private ImageView pionOrdinateur;
 
+    /** true = tour du joueur, false = tour de l'ordinateur */
     private boolean tourJoueur = true;
+    /** true quand la partie est terminée (un gagnant est déclaré) */
     private boolean partieTerminee = false;
 
-    // Méthode appelée automatiquement par JavaFX au chargement du FXML
+    /**
+     * Méthode d'initialisation appelée automatiquement par JavaFX après le chargement du FXML.
+     * Prépare le modèle, charge les images, place les pions et masque le label du gagnant.
+     */
     @FXML
     private void initialize() {
-
-        // Initialisation du modèle
         grille = new Grille();
         mecanisme = new Mecanisme(grille);
 
-        // Chargement de l'image du plateau
+        // Image du plateau
         try {
             Image plateau = new Image(getClass().getResourceAsStream("/images/plateau.png"));
             imagePlateau.setImage(plateau);
@@ -58,11 +87,11 @@ public class JeuController {
             System.err.println("Erreur : impossible de charger l'image /images/plateau.png");
         }
 
-        // Le plateau suit la taille de l'image
+        // Le conteneur s'adapte à la taille de l'image
         conteneurPlateau.prefWidthProperty().bind(imagePlateau.fitWidthProperty());
         conteneurPlateau.prefHeightProperty().bind(imagePlateau.fitHeightProperty());
 
-        // Chargement du pion du joueur
+        // Pion du joueur
         try {
             Image imgJoueur = new Image(getClass().getResourceAsStream("/images/pionJoueur.png"));
             pionJoueur = new ImageView(imgJoueur);
@@ -72,7 +101,7 @@ public class JeuController {
             pionJoueur = new ImageView();
         }
 
-        // Chargement du pion de l'ordinateur
+        // Pion de l'ordinateur
         try {
             Image imgOrdi = new Image(getClass().getResourceAsStream("/images/pionOrdinateur.png"));
             pionOrdinateur = new ImageView(imgOrdi);
@@ -82,20 +111,20 @@ public class JeuController {
             pionOrdinateur = new ImageView();
         }
 
-        // Ajout des pions dans la grille
         grid.getChildren().addAll(pionJoueur, pionOrdinateur);
 
-        // Affiche la face 1 du dé au départ
         afficherFaceDe(1);
-
-        // Place les pions selon leurs positions initiales
         mettreAJourAffichage();
 
-        // Label gagnant caché au démarrage
-        labelGagnant.setVisible(false);
+        labelGagnant.setVisible(false); // masqué tant qu'il n'y a pas de gagnant
     }
 
-    // Affiche l'image correspondant à la valeur du dé
+    /**
+     * Affiche la face du dé correspondant à la valeur donnée (1 à 6).
+     * Charge l'image depuis le dossier /images/.
+     *
+     * @param valeur valeur du dé
+     */
     private void afficherFaceDe(int valeur) {
         String chemin = "/images/de" + valeur + ".png";
         try {
@@ -106,7 +135,11 @@ public class JeuController {
         }
     }
 
-    // Action du bouton "Lancer le dé"
+    /**
+     * Action déclenchée par le bouton "Lancer le dé".
+     * Génère une valeur aléatoire, déplace le joueur actif, vérifie les conditions de victoire
+     * et gère l'alternance des tours (y compris le tour automatique de l'ordinateur).
+     */
     @FXML
     private void lancerDe() {
         if (partieTerminee) return;
@@ -115,13 +148,10 @@ public class JeuController {
         afficherFaceDe(de);
 
         if (tourJoueur) {
-
-            // Déplacement du joueur
             positionJoueur = mecanisme.deplacer(positionJoueur, de, positionOrdinateur, "Joueur");
             positionJoueur = mecanisme.verifierMecanisme(positionJoueur, "Joueur");
             deplacerPion(pionJoueur, positionJoueur);
 
-            // Vérifie la victoire
             if (positionJoueur >= 100) {
                 partieTerminee = true;
                 labelGagnant.setText("Joueur gagne !");
@@ -129,19 +159,14 @@ public class JeuController {
                 return;
             }
 
-            // Passage au tour de l'ordinateur
             tourJoueur = false;
             labelTour.setText("Tour de l'ordinateur");
             jouerTourOrdinateur();
-
         } else {
-
-            // Déplacement de l'ordinateur
             positionOrdinateur = mecanisme.deplacer(positionOrdinateur, de, positionJoueur, "Ordinateur");
             positionOrdinateur = mecanisme.verifierMecanisme(positionOrdinateur, "Ordinateur");
             deplacerPion(pionOrdinateur, positionOrdinateur);
 
-            // Vérifie la victoire
             if (positionOrdinateur >= 100) {
                 partieTerminee = true;
                 labelGagnant.setText("Ordinateur gagne !");
@@ -149,7 +174,6 @@ public class JeuController {
                 return;
             }
 
-            // Retour au joueur
             tourJoueur = true;
             labelTour.setText("Tour du joueur");
         }
@@ -157,7 +181,10 @@ public class JeuController {
         mettreAJourAffichage();
     }
 
-    // L'ordinateur joue après un petit délai
+    /**
+     * Lance le tour de l'ordinateur avec un délai de 800 ms pour un effet visuel.
+     * Le tour est exécuté sur un thread séparé puis rapatrié sur le thread JavaFX.
+     */
     private void jouerTourOrdinateur() {
         if (partieTerminee || tourJoueur) return;
 
@@ -167,53 +194,51 @@ public class JeuController {
         }).start();
     }
 
-    // Déplace un pion sur la grille selon sa position (1 à 100)
+    /**
+     * Place un pion sur la grille à la position donnée (1 à 100).
+     * La position 0 rend le pion invisible (pas encore sur le plateau).
+     * Le calcul tient compte du parcours en zigzag classique du jeu.
+     *
+     * @param pion     l'ImageView du pion à déplacer
+     * @param position position sur le plateau (1 à 100, 0 = hors plateau)
+     */
     private void deplacerPion(ImageView pion, int position) {
-
         if (position == 0) {
             pion.setVisible(false);
             return;
         }
-
         pion.setVisible(true);
 
         int ligne, colonne;
-
-        // Case 100 (coin supérieur gauche)
         if (position == 100) {
             ligne = 0;
             colonne = 0;
         } else {
-            // Ligne de 0 à 9 (du bas vers le haut)
-            ligne = (position - 1) / 10;
-
-            // Position dans la ligne
+            ligne = (position - 1) / 10;               // 0 = bas du plateau
             int posDansLigne = (position - 1) % 10;
-
-            // Lignes paires → gauche vers droite
-            // Lignes impaires → droite vers gauche
             if (ligne % 2 == 0) {
-                colonne = posDansLigne;
+                colonne = posDansLigne;                // ligne paire : de gauche à droite
             } else {
-                colonne = 9 - posDansLigne;
+                colonne = 9 - posDansLigne;            // ligne impaire : de droite à gauche
             }
         }
+        ligne = 9 - ligne; // inversion axe vertical pour correspondre au GridPane (0 = haut)
 
-        // Inversion car la grille commence en haut
-        ligne = 9 - ligne;
-
-        // Placement dans la GridPane
         GridPane.setColumnIndex(pion, colonne);
         GridPane.setRowIndex(pion, ligne);
     }
 
-    // Met à jour l'affichage des deux pions
+    /**
+     * Met à jour l'affichage des deux pions selon leurs positions actuelles.
+     */
     private void mettreAJourAffichage() {
         deplacerPion(pionJoueur, positionJoueur);
         deplacerPion(pionOrdinateur, positionOrdinateur);
     }
 
-    // Réinitialise la partie
+    /**
+     * Réinitialise tous les paramètres pour recommencer une nouvelle partie.
+     */
     @FXML
     private void recommencerPartie() {
         positionJoueur = 0;
@@ -227,7 +252,10 @@ public class JeuController {
         mettreAJourAffichage();
     }
 
-    // Action « Recommencer » depuis la barre de menu (avec confirmation)
+    /**
+     * Action "Recommencer" depuis la barre de menu.
+     * Affiche une boîte de confirmation avant de réinitialiser la partie.
+     */
     @FXML
     private void handleRecommencer() {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
@@ -241,7 +269,10 @@ public class JeuController {
         }
     }
 
-    // Action « Quitter » depuis la barre de menu (avec confirmation)
+    /**
+     * Action "Quitter" depuis la barre de menu.
+     * Propose une confirmation avant de retourner à l'écran d'accueil.
+     */
     @FXML
     private void handleQuitterPartie() {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
@@ -255,14 +286,17 @@ public class JeuController {
         }
     }
 
-    // Retourne à l'écran d'accueil (nécessite HelloController.getInstance())
+    /**
+     * Retourne à l'écran d'accueil en utilisant l'instance du HelloController principal.
+     */
     private void retournerAccueil() {
-        // On cache le label gagnant pour le prochain affichage
         labelGagnant.setVisible(false);
         HelloController.getInstance().handleAccueil();
     }
 
-    // Ancienne méthode quitterVersAccueil conservée (appelle la nouvelle)
+    /**
+     * Méthode conservée (peut être appelée depuis d'anciens boutons) qui renvoie vers l'accueil.
+     */
     @FXML
     private void quitterVersAccueil() {
         retournerAccueil();
