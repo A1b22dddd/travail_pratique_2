@@ -2,6 +2,9 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -12,15 +15,31 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="499.0" prefWidth="802.0" style="-fx-background-color: #B0C4DE;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csi.tp2.JeuController">
+
+    <!-- Barre de menu en haut, uniquement pour l'écran de jeu -->
+    <top>
+        <MenuBar>
+            <Menu text="Jeu">
+                <MenuItem fx:id="menuRecommencer" text="Recommencer" onAction="#handleRecommencer" />
+                <MenuItem fx:id="menuQuitter" text="Quitter" onAction="#handleQuitterPartie" />
+            </Menu>
+        </MenuBar>
+    </top>
+
     <center>
-        <StackPane fx:id="conteneurPlateau" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="504.0" prefWidth="608.0">
-            <!-- Image du plateau (à fournir) -->
+        <!-- StackPane comme à l'origine, aucun changement -->
+        <StackPane fx:id="conteneurPlateau" alignment="CENTER"
+                   maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                   prefHeight="504.0" prefWidth="608.0">
+            <!-- Image du plateau -->
             <ImageView fx:id="imagePlateau" fitHeight="540.0" fitWidth="605.0" preserveRatio="true">
                 <image>
                     <Image url="@../../images/plateau.png" />
                 </image>
             </ImageView>
-            <GridPane fx:id="grid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="540.0" prefWidth="536.0">
+            <!-- Grille 10x10 -->
+            <GridPane fx:id="grid" maxHeight="-Infinity" maxWidth="-Infinity"
+                      minHeight="0.0" minWidth="0.0" prefHeight="540.0" prefWidth="536.0">
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -48,12 +67,19 @@
             </GridPane>
         </StackPane>
     </center>
+
     <right>
         <VBox alignment="CENTER" prefHeight="545.0" prefWidth="194.0" spacing="20">
-            <Label fx:id="labelTour" prefHeight="26.0" prefWidth="110.0" style="-fx-font-size: 16px;" text="Tour du joueur" />
-            <!-- Image du dé  -->
+            <Label fx:id="labelTour" prefHeight="26.0" prefWidth="110.0"
+                   style="-fx-font-size: 16px;" text="Tour du joueur" />
+            <!-- Image du dé -->
             <ImageView fx:id="imageDe" fitWidth="80" fitHeight="80" preserveRatio="true" />
             <Button onAction="#lancerDe" text="Lancer le dé" />
+
+            <!-- Label du gagnant, visible uniquement en fin de partie -->
+            <Label fx:id="labelGagnant"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: red;"
+                   visible="false" />
         </VBox>
     </right>
 </BorderPane>

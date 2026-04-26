@@ -8,17 +8,26 @@ import java.io.IOException;
 
 public class HelloController {
 
+    private static HelloController instance;
+
+    public HelloController() {
+        instance = this;
+    }
+
+    public static HelloController getInstance() {
+        return instance;
+    }
+
     @FXML
     private StackPane contentPane;
 
     @FXML
     private void initialize() {
-        // Afficher l'écran d'accueil par défaut au démarrage
         loadView("AccueilView.fxml");
     }
 
     @FXML
-    private void handleAccueil() {
+    public void handleAccueil() {   // <-- devenu public
         loadView("AccueilView.fxml");
     }
 

@@ -1,11 +1,15 @@
 package csi.tp2;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import java.util.Optional;
 import java.util.Random;
 
 public class JeuController {
@@ -14,9 +18,13 @@ public class JeuController {
     @FXML private ImageView imagePlateau;   // Image du plateau
     @FXML private Label labelTour;          // Indique le tour actuel
     @FXML private ImageView imageDe;        // Image du dé
-    @FXML private Label labelGagnant;       // Affiche le gagnant
+    @FXML private Label labelGagnant;       // Affiche le gagnant (déjà présent)
     @FXML private StackPane conteneurPlateau; // Conteneur principal du plateau
     @FXML private GridPane grid;            // Grille 10x10 pour placer les pions
+
+    // Nouveaux attributs pour la barre de menu
+    @FXML private MenuItem menuRecommencer;
+    @FXML private MenuItem menuQuitter;
 
     // Modèle du jeu
     private Grille grille;
@@ -82,6 +90,9 @@ public class JeuController {
 
         // Place les pions selon leurs positions initiales
         mettreAJourAffichage();
+
+        // Label gagnant caché au démarrage
+        labelGagnant.setVisible(false);
     }
 
     // Affiche l'image correspondant à la valeur du dé
@@ -114,6 +125,7 @@ public class JeuController {
             if (positionJoueur >= 100) {
                 partieTerminee = true;
                 labelGagnant.setText("Joueur gagne !");
+                labelGagnant.setVisible(true);
                 return;
             }
 
@@ -133,6 +145,7 @@ public class JeuController {
             if (positionOrdinateur >= 100) {
                 partieTerminee = true;
                 labelGagnant.setText("Ordinateur gagne !");
+                labelGagnant.setVisible(true);
                 return;
             }
 
@@ -208,12 +221,50 @@ public class JeuController {
         tourJoueur = true;
         partieTerminee = false;
         labelGagnant.setText("");
+        labelGagnant.setVisible(false);
         afficherFaceDe(1);
         labelTour.setText("Tour du joueur");
         mettreAJourAffichage();
     }
 
+    // Action « Recommencer » depuis la barre de menu (avec confirmation)
+    @FXML
+    private void handleRecommencer() {
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Recommencer la partie");
+        confirmation.setHeaderText("Voulez-vous vraiment recommencer la partie ?");
+        confirmation.setContentText("Toute progression sera perdue.");
+
+        Optional<ButtonType> resultat = confirmation.showAndWait();
+        if (resultat.isPresent() && resultat.get() == ButtonType.OK) {
+            recommencerPartie();
+        }
+    }
+
+    // Action « Quitter » depuis la barre de menu (avec confirmation)
+    @FXML
+    private void handleQuitterPartie() {
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Quitter la partie");
+        confirmation.setHeaderText("Voulez-vous vraiment quitter la partie ?");
+        confirmation.setContentText("Vous retournerez à l'écran d'accueil.");
+
+        Optional<ButtonType> resultat = confirmation.showAndWait();
+        if (resultat.isPresent() && resultat.get() == ButtonType.OK) {
+            retournerAccueil();
+        }
+    }
+
+    // Retourne à l'écran d'accueil (nécessite HelloController.getInstance())
+    private void retournerAccueil() {
+        // On cache le label gagnant pour le prochain affichage
+        labelGagnant.setVisible(false);
+        HelloController.getInstance().handleAccueil();
+    }
+
+    // Ancienne méthode quitterVersAccueil conservée (appelle la nouvelle)
     @FXML
     private void quitterVersAccueil() {
+        retournerAccueil();
     }
 }
