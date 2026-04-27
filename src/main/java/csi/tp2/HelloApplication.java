@@ -1,11 +1,4 @@
-package csi.tp2;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 
 /**
  *Nom et prénom : HOUNSOU Césaire
@@ -17,6 +10,18 @@ import java.io.IOException;
  *   et la zone centrale interchangeable (Accueil, Règles, Jeu).
  *   Les dimensions de la fenêtre sont restreintes entre 800×600 et 1200×700.
  */
+
+
+package csi.tp2;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
+
 public class HelloApplication extends Application {
 
     /**

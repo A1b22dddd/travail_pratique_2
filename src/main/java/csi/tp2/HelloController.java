@@ -1,10 +1,3 @@
-package csi.tp2;
-
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import java.io.IOException;
 
 /**
  * Nom et prénom : HOUNSOU Césaire
@@ -14,7 +7,18 @@ import java.io.IOException;
  *   Contrôleur de la fenêtre principale (helloView.fxml).
  *   Gère le menu latéral permanent et le changement des vues centrales
  *   (Accueil, Règles, Jeu).
- */
+ **/
+
+
+package csi.tp2;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import java.io.IOException;
+
+
 public class HelloController {
 
     /** Instance statique pour permettre à d'autres contrôleurs (ex: JeuController) d'appeler la navigation */

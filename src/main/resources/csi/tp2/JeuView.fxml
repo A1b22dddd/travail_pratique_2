@@ -76,7 +76,7 @@
             <ImageView fx:id="imageDe" fitWidth="80" fitHeight="80" preserveRatio="true" />
             <Button onAction="#lancerDe" text="Lancer le dé" />
 
-            <!-- Label du gagnant, visible uniquement en fin de partie -->
+            <!--// Label du gagnant, visible uniquement en fin de partie //-->
             <Label fx:id="labelGagnant"
                    style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: red;"
                    visible="false" />
