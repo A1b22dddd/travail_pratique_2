@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="20" style="-fx-background-color: #B0C4DE;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+    <ImageView fx:id="imageAccueil" fitWidth="800.0" preserveRatio="true">
+      <image>
+         <Image url="@../../images/acceuil.png" />
+      </image></ImageView>
+</VBox>
